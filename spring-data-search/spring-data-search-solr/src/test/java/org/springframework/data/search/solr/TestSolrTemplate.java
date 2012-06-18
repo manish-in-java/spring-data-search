@@ -52,7 +52,7 @@ public class TestSolrTemplate
     @Before
     public void beforeEachTest() throws SolrServerException, IOException, ParserConfigurationException, SAXException
     {
-        searchOperations = new SolrTemplate("solr/solr.xml", "default");
+        searchOperations = new SolrTemplate("default", true, "solr/solr.xml");
         searchOperations.deleteByQuery("*:*");
     }
 

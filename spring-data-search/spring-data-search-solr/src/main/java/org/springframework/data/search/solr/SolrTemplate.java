@@ -77,48 +77,34 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
     private int                       threadCount;
 
     /**
-     * Sets the URL to the Solr server to be used for indexing search entries.
+     * Initializes a Solr server based on basic configuration information
+     * available for the Solr server.
      * 
-     * @param url The URL to the Solr server.
-     * @throws MalformedURLException If <code>url</code> is malformed.
-     */
-    public SolrTemplate(final String url) throws MalformedURLException
-    {
-        this(new CommonsHttpSolrServer(url));
-    }
-
-    /**
-     * Sets the URL to the Solr server to be used for indexing search entries
-     * and whether an embedded Solr server should be used for endexing.
-     * 
-     * @param path The path to the Solr server.
      * @param coreName The name of the Solr core to use.
+     * @param embedded If <code>true</code>, an {@link EmbeddedSolrServer}
+     *            instance is created.
+     * @param paths Paths to the Solr server. If <code>embedded</code> is
+     *            <code>true</code>, this should contain exactly one path. A
+     *            {@link RuntimeException} will be thrown if
+     *            <code>embedded</code> is <code>true</code> and this parameter
+     *            has more than one path. If <code>embedded</code> is
+     *            <code>false</code>, this can contain one or more paths. A
+     *            {@link CommonsHttpSolrServer} instance is created if only one
+     *            path is passed, otherwise an {@link LBHttpSolrServer} instance
+     *            is created with all the paths.
      * @throws IOException If no Solr configuration can be found at the location
      *             pointed to by <code>path</code>.
-     * @throws MalformedURLException If <code>path</code> is malformed.
-     * @throws ParserConfigurationException If the Solr configuration at the
-     *             location pointed to by <code>path</code> cannot be parsed
-     *             correctly.
-     * @throws SAXException If the Solr configuration at the location pointed to
-     *             by <code>path</code> contains invalid XML.
-     */
-    public SolrTemplate(final String path, final String coreName) throws IOException, MalformedURLException, ParserConfigurationException,
-            SAXException
-    {
-        this(createEmbeddedSolrServer(path, coreName));
-    }
-
-    /**
-     * Sets URLs to multiple load-balanced Solr servers to use for indexing
-     * search entries.
-     * 
-     * @param urls The URLs to Solr servers.
-     * @throws MalformedURLException If any of the URLs in <code>urls</code> is
+     * @throws MalformedURLException If any of the <code>paths</code> values is
      *             malformed.
+     * @throws ParserConfigurationException If the Solr configuration at any of
+     *             the locations pointed to by <code>paths</code> cannot be
+     *             parsed correctly.
+     * @throws SAXException If the Solr configuration at any of the locations
+     *             pointed to by <code>paths</code> contains invalid XML.
      */
-    public SolrTemplate(final String... urls) throws MalformedURLException
+    public SolrTemplate(final String coreName, final boolean embedded, final String... paths) throws IOException, MalformedURLException, ParserConfigurationException, SAXException
     {
-        this(new LBHttpSolrServer(urls));
+        this(createSolrServer(coreName, embedded, paths));
     }
 
     /**
@@ -126,11 +112,12 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
      * 
      * @param server A {@link SolrServer}.
      */
-    public SolrTemplate(final SolrServer server)
+    private SolrTemplate(final SolrServer server)
     {
         super();
+
         this.searchServer = server;
-        setExceptionTranslator(new SolrExceptionTranslator());
+        this.setExceptionTranslator(new SolrExceptionTranslator());
     }
 
     /**
@@ -503,27 +490,79 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
     }
 
     /**
-     * Create a {@link SolrServer} that a {@link SolrTemplate} can use.
+     * Initializes a Solr server based on basic configuration information
+     * available for the Solr server.
      * 
-     * @param path The path to the {@link SolrServer}.
-     * @param coreName The Solr core name to use.
-     * @return A {@link SolrServer}
+     * @param coreName The name of the Solr core to use.
+     * @param embedded If <code>true</code>, an {@link EmbeddedSolrServer}
+     *            instance is created.
+     * @param paths Paths to the Solr server. If <code>embedded</code> is
+     *            <code>true</code>, this should contain exactly one path. A
+     *            {@link RuntimeException} will be thrown if
+     *            <code>embedded</code> is <code>true</code> and this parameter
+     *            has more than one path. If <code>embedded</code> is
+     *            <code>false</code>, this can contain one or more paths. A
+     *            {@link CommonsHttpSolrServer} instance is created if only one
+     *            path is passed, otherwise an {@link LBHttpSolrServer} instance
+     *            is created with all the paths.
      * @throws IOException If no Solr configuration can be found at the location
      *             pointed to by <code>path</code>.
-     * @throws MalformedURLException If <code>path</code> is malformed.
-     * @throws ParserConfigurationException If the Solr configuration at the
-     *             location pointed to by <code>path</code> cannot be parsed
-     *             correctly.
-     * @throws SAXException If the Solr configuration at the location pointed to
-     *             by <code>path</code> contains invalid XML.
+     * @throws MalformedURLException If any of the <code>paths</code> values is
+     *             malformed.
+     * @throws ParserConfigurationException If the Solr configuration at any of
+     *             the locations pointed to by <code>paths</code> cannot be
+     *             parsed correctly.
+     * @throws SAXException If the Solr configuration at any of the locations
+     *             pointed to by <code>paths</code> contains invalid XML.
      */
-    private static SolrServer createEmbeddedSolrServer(final String path, final String coreName) throws IOException, MalformedURLException, ParserConfigurationException,
-            SAXException
+    private static SolrServer createSolrServer(final String coreName, final boolean embedded, final String... paths) throws IOException, MalformedURLException,
+            ParserConfigurationException, SAXException
     {
-        final File configFile = new ClassPathResource(path).getFile();
-        final CoreContainer coreContainer = new CoreContainer();
-        coreContainer.load(configFile.getParentFile().getAbsolutePath(), configFile);
+        if (paths == null)
+        {
+            throw new RuntimeException("Argument [paths] is null.");
+        }
+        else if (paths.length == 0)
+        {
+            throw new RuntimeException("Argument [paths] does not contain any path.");
+        }
+        else if (paths[0] == null)
+        {
+            throw new RuntimeException("Argument [paths] contains a null path.");
+        }
+        else if (paths[0].trim().equals(""))
+        {
+            throw new RuntimeException("Argument [paths] contains a blank path.");
+        }
 
-        return new EmbeddedSolrServer(coreContainer, coreName);
+        if (embedded)
+        {
+            if (paths.length > 1)
+            {
+                throw new RuntimeException("Argument [embedded] is set to [true] but the argument [paths] contains more than one path.");
+            }
+            else if (coreName == null)
+            {
+                throw new RuntimeException("Argument [embedded] is set to [true] but the argument [coreName] contains a null value.");
+            }
+            else if (coreName.trim().equals(""))
+            {
+                throw new RuntimeException("Argument [embedded] is set to [true] but the argument [coreName] contains a blank value.");
+            }
+            else
+            {
+                final File configFile = new ClassPathResource(paths[0].trim()).getFile();
+                final CoreContainer coreContainer = new CoreContainer();
+                coreContainer.load(configFile.getParentFile().getAbsolutePath(), configFile);
+
+                return new EmbeddedSolrServer(coreContainer, coreName);
+            }
+        }
+        else if (paths.length > 1)
+        {
+            return new LBHttpSolrServer(paths);
+        }
+
+        return new CommonsHttpSolrServer(paths[0]);
     }
 }
