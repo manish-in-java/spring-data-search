@@ -10,13 +10,9 @@
     <context:component-scan base-package="org.springframework.data.search" />
 
     <bean id="solrTemplate" class="org.springframework.data.search.solr.SolrTemplate">
-        <constructor-arg name="coreName" value="default" />
-        <constructor-arg name="embedded" value="true" />
-        <constructor-arg name="paths">
-            <array>
-                <value>solr/solr.xml</value>
-            </array>
-        </constructor-arg>
+        <constructor-arg index="0" name="core" value="default" />
+        <constructor-arg index="1" name="embedded" value="true" />
+        <constructor-arg index="2" name="path" value="solr/solr.xml" />
     </bean>
 
     <solr:repositories base-package="org.springframework.data.search" />

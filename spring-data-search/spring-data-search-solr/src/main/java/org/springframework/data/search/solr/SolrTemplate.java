@@ -80,14 +80,14 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
      * Initializes a Solr server based on basic configuration information
      * available for the Solr server.
      * 
-     * @param coreName The name of the Solr core to use.
+     * @param core The name of the Solr core to use.
      * @param embedded If <code>true</code>, an {@link EmbeddedSolrServer}
      *            instance is created.
-     * @param paths Paths to the Solr server. If <code>embedded</code> is
-     *            <code>true</code>, this should contain exactly one path. A
-     *            {@link RuntimeException} will be thrown if
-     *            <code>embedded</code> is <code>true</code> and this parameter
-     *            has more than one path. If <code>embedded</code> is
+     * @param path Comma-separated paths to the Solr server. If
+     *            <code>embedded</code> is <code>true</code>, this should
+     *            contain exactly one path. A {@link RuntimeException} will be
+     *            thrown if <code>embedded</code> is <code>true</code> and this
+     *            parameter has more than one path. If <code>embedded</code> is
      *            <code>false</code>, this can contain one or more paths. A
      *            {@link CommonsHttpSolrServer} instance is created if only one
      *            path is passed, otherwise an {@link LBHttpSolrServer} instance
@@ -102,9 +102,9 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
      * @throws SAXException If the Solr configuration at any of the locations
      *             pointed to by <code>paths</code> contains invalid XML.
      */
-    public SolrTemplate(final String coreName, final boolean embedded, final String... paths) throws IOException, MalformedURLException, ParserConfigurationException, SAXException
+    public SolrTemplate(final String core, final boolean embedded, final String path) throws IOException, MalformedURLException, ParserConfigurationException, SAXException
     {
-        this(createSolrServer(coreName, embedded, paths));
+        this(createSolrServer(core, embedded, path));
     }
 
     /**
@@ -493,10 +493,10 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
      * Initializes a Solr server based on basic configuration information
      * available for the Solr server.
      * 
-     * @param coreName The name of the Solr core to use.
+     * @param core The name of the Solr core to use.
      * @param embedded If <code>true</code>, an {@link EmbeddedSolrServer}
      *            instance is created.
-     * @param paths Paths to the Solr server. If <code>embedded</code> is
+     * @param path Paths to the Solr server. If <code>embedded</code> is
      *            <code>true</code>, this should contain exactly one path. A
      *            {@link RuntimeException} will be thrown if
      *            <code>embedded</code> is <code>true</code> and this parameter
@@ -515,24 +515,22 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
      * @throws SAXException If the Solr configuration at any of the locations
      *             pointed to by <code>paths</code> contains invalid XML.
      */
-    private static SolrServer createSolrServer(final String coreName, final boolean embedded, final String... paths) throws IOException, MalformedURLException,
+    private static SolrServer createSolrServer(final String core, final boolean embedded, final String path) throws IOException, MalformedURLException,
             ParserConfigurationException, SAXException
     {
-        if (paths == null)
+        if (path == null)
         {
             throw new RuntimeException("Argument [paths] is null.");
         }
-        else if (paths.length == 0)
-        {
-            throw new RuntimeException("Argument [paths] does not contain any path.");
-        }
-        else if (paths[0] == null)
-        {
-            throw new RuntimeException("Argument [paths] contains a null path.");
-        }
-        else if (paths[0].trim().equals(""))
+        else if (path.trim().equals(""))
         {
             throw new RuntimeException("Argument [paths] contains a blank path.");
+        }
+
+        final String[] paths = path.split(",");
+        if (paths[0].trim().equals(""))
+        {
+            throw new RuntimeException("Argument [paths] contains a null path.");
         }
 
         if (embedded)
@@ -541,11 +539,11 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
             {
                 throw new RuntimeException("Argument [embedded] is set to [true] but the argument [paths] contains more than one path.");
             }
-            else if (coreName == null)
+            else if (core == null)
             {
                 throw new RuntimeException("Argument [embedded] is set to [true] but the argument [coreName] contains a null value.");
             }
-            else if (coreName.trim().equals(""))
+            else if (core.trim().equals(""))
             {
                 throw new RuntimeException("Argument [embedded] is set to [true] but the argument [coreName] contains a blank value.");
             }
@@ -555,7 +553,7 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
                 final CoreContainer coreContainer = new CoreContainer();
                 coreContainer.load(configFile.getParentFile().getAbsolutePath(), configFile);
 
-                return new EmbeddedSolrServer(coreContainer, coreName);
+                return new EmbeddedSolrServer(coreContainer, core);
             }
         }
         else if (paths.length > 1)
