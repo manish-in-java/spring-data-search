@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  * @author Manish Baxi
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value = { ElementType.FIELD, ElementType.TYPE })
+@Target(value = { ElementType.FIELD, ElementType.METHOD, ElementType.TYPE })
 public @interface Indexed
 {
     /**
