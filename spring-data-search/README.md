@@ -27,3 +27,9 @@ Search technologies.
 
 II. Background
 --------------
+It is a common requirement for applications to provide
+[full-text search](http://en.wikipedia.org/wiki/Full_text_search) on data
+stored within the application.  In this context, the term **full text search**
+means the ability to search the complete text content stored by an application
+and not just selective data fields such as record names and titles.
+Furthermore, 
