@@ -61,19 +61,12 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
     private static final String       SCORE_FIELD               = "score";
 
     private boolean                   allowStreaming            = false;
-
     private boolean                   autoCommit                = true;
-
     private boolean                   autoGenerateIdField       = true;
-
     private String                    documentIdField           = DEFAULT_DOCUMENT_ID_FIELD;
-
     private StreamingUpdateSolrServer indexServer               = null;
-
     private int                       queueSize;
-
     private SolrServer                searchServer;
-
     private int                       threadCount;
 
     /**
@@ -398,7 +391,6 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
     @Override
     public void updateInBatch(String query)
     {
-
     }
 
     private String addIdToDocumentIfEnabled(IndexEntry document)

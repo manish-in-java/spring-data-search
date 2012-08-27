@@ -27,7 +27,17 @@ public class EmptyBean implements Indexable
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getId()
+    {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getIndexName()
     {
         return null;
     }

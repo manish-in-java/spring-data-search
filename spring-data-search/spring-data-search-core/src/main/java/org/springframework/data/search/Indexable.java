@@ -31,4 +31,11 @@ public interface Indexable
      *         in search indices.
      */
     String getId();
+
+    /**
+     * Gets an optional index name to which the objects must be saved.
+     * 
+     * @return An optional index name to which the objects must be saved.
+     */
+    String getIndexName();
 }
