@@ -32,13 +32,4 @@ public class EmptyBean implements Indexable
     {
         return null;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getIndexName()
-    {
-        return null;
-    }
 }

@@ -35,15 +35,6 @@ public class AnythingToBeIndexedBean implements Indexable
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getIndexName()
-    {
-        return null;
-    }
-
     public String getName()
     {
         return name;

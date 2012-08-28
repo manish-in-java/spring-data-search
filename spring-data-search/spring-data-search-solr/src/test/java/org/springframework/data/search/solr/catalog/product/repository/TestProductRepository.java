@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package org.springframework.data.search.solr.repository;
+package org.springframework.data.search.solr.catalog.product.repository;
+
+import static org.junit.Assert.assertNotNull;
 
 import java.util.UUID;
-import java.util.Date;
 
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.search.DummyBean;
+import org.springframework.data.search.catalog.product.Product;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
-
 /**
- * Unit tests for {@link SolrRepository}.
+ * Unit tests for {@link ProductRepository}.
  */
 @ContextConfiguration(locations = "classpath:springContext.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class TestSolrRepository
+public class TestProductRepository
 {
     @Autowired
-    DummyBeanRepository repository;
+    ProductRepository repository;
 
     /**
      * Clears the index after each test.
@@ -61,60 +60,26 @@ public class TestSolrRepository
     }
 
     /**
-     * Tests that objects indexed previously can be loaded using the repository
-     * interfaces.
-     */
-    @Test
-    public void testFind()
-    {
-        final DummyBean bean = new DummyBean(UUID.randomUUID().toString(), new Date(), "Searchable data");
-
-        this.repository.save(bean);
-
-        final DummyBean indexedBean = this.repository.findOne(bean.getId());
-
-        assertNotNull(indexedBean);
-        assertEquals(bean.getId(), indexedBean.getId());
-        assertEquals(bean.getModified(), indexedBean.getModified());
-        assertEquals(bean.getName(), indexedBean.getName());
-    }
-
-    /**
      * Tests that all indexed records can be retrieved.
      */
     @Test
     public void testFindAll()
     {
-        DummyBean bean = new DummyBean(UUID.randomUUID().toString(), new Date(), "Searchable data");
-
+        Product bean = new Product(UUID.randomUUID().toString(), "Black and Decker Power Drive", "An electrical screwdriver.");
         this.repository.save(bean);
 
-        bean = new DummyBean(UUID.randomUUID().toString(), new Date(), "Searchable data");
-
+        bean = new Product(
+                UUID.randomUUID().toString(),
+                "Hoover WindTunnel",
+                "Combining superior performance with a lightweight design at just 16.5 pounds, this bagless upright vacuum cleaner offers powerful cleaning throughout the home, from top to bottom. The unit's five-position carpet-height adjustment allows for effectively cleaning of all floor types. The patented WindTunnel technology features air passages that help maintain suction power and traps dirt and channels it into the dirt cup-- which means the dirt and debris stay in the machine, not scattered back out onto the floor.");
         this.repository.save(bean);
 
-        bean = new DummyBean(UUID.randomUUID().toString(), new Date(), "Searchable data");
-
+        bean = new Product(UUID.randomUUID().toString(), "Nerf Vortex Proton",
+                "Offering long-range, high-powered disc-blasting technology, NERF VORTEX blasters hurl ultra-distance discs for the ultimate battle experience!");
         this.repository.save(bean);
 
-        Iterable<DummyBean> beans = this.repository.findAll();
+        Iterable<Product> beans = this.repository.findAll();
 
         assertNotNull(beans.iterator());
-    }
-
-    /**
-     * Tests that objects can be indexed using the repository interfaces.
-     */
-    @Test
-    public void testSave()
-    {
-        final DummyBean bean = new DummyBean(UUID.randomUUID().toString(), new Date(), "Searchable data");
-
-        final DummyBean indexedBean = this.repository.save(bean);
-
-        assertNotNull(indexedBean);
-        assertEquals(bean.getId(), indexedBean.getId());
-        assertEquals(bean.getModified(), indexedBean.getModified());
-        assertEquals(bean.getName(), indexedBean.getName());
     }
 }

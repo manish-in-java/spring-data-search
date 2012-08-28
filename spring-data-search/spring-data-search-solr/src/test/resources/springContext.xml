@@ -9,11 +9,25 @@
     <context:annotation-config />
     <context:component-scan base-package="org.springframework.data.search" />
 
-    <bean id="solrTemplate" class="org.springframework.data.search.solr.SolrTemplate">
+    <bean id="solrBrandTemplate" class="org.springframework.data.search.solr.SolrTemplate">
+        <constructor-arg index="0" name="core" value="brand" />
+        <constructor-arg index="1" name="embedded" value="true" />
+        <constructor-arg index="2" name="path" value="solr/solr.xml" />
+    </bean>
+
+    <bean id="solrDefaultTemplate" class="org.springframework.data.search.solr.SolrTemplate">
         <constructor-arg index="0" name="core" value="default" />
         <constructor-arg index="1" name="embedded" value="true" />
         <constructor-arg index="2" name="path" value="solr/solr.xml" />
     </bean>
 
-    <solr:repositories base-package="org.springframework.data.search" />
+    <bean id="solrProductTemplate" class="org.springframework.data.search.solr.SolrTemplate">
+        <constructor-arg index="0" name="core" value="product" />
+        <constructor-arg index="1" name="embedded" value="true" />
+        <constructor-arg index="2" name="path" value="solr/solr.xml" />
+    </bean>
+
+    <solr:repositories base-package="org.springframework.data.search.solr.repository" solr-template-ref="solrDefaultTemplate" />
+    <solr:repositories base-package="org.springframework.data.search.solr.catalog.brand.repository" solr-template-ref="solrBrandTemplate" />
+    <solr:repositories base-package="org.springframework.data.search.solr.catalog.product.repository" solr-template-ref="solrProductTemplate" />
 </beans>

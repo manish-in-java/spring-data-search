@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package org.springframework.data.search;
+package org.springframework.data.search.solr.catalog.brand.repository;
+
+import org.springframework.data.repository.Repository;
+import org.springframework.data.search.catalog.brand.Brand;
+import org.springframework.data.search.solr.repository.SolrRepository;
 
 /**
- * Contract for objects that can be indexed.
- * 
- * @author Manish Baxi
+ * A Spring Data {@link Repository} for {@link Brand}.
  */
-public interface Indexable
+public interface BrandRepository extends SolrRepository<Brand>
 {
-    /**
-     * Gets the unique identifier with which the object will be referred to in
-     * search indices.
-     * 
-     * @return The unique identifier with which the object will be referred to
-     *         in search indices.
-     */
-    String getId();
 }

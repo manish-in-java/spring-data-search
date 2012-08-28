@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package org.springframework.data.search.solr.repository;
+package org.springframework.data.search.solr.catalog.brand.repository;
+
+import static org.junit.Assert.assertNotNull;
 
 import java.util.UUID;
-import java.util.Date;
 
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.search.DummyBean;
+import org.springframework.data.search.catalog.brand.Brand;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
-
 /**
- * Unit tests for {@link SolrRepository}.
+ * Unit tests for {@link BrandRepository}.
  */
 @ContextConfiguration(locations = "classpath:springContext.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class TestSolrRepository
+public class TestBrandRepository
 {
     @Autowired
-    DummyBeanRepository repository;
+    BrandRepository repository;
 
     /**
      * Clears the index after each test.
@@ -61,60 +60,30 @@ public class TestSolrRepository
     }
 
     /**
-     * Tests that objects indexed previously can be loaded using the repository
-     * interfaces.
-     */
-    @Test
-    public void testFind()
-    {
-        final DummyBean bean = new DummyBean(UUID.randomUUID().toString(), new Date(), "Searchable data");
-
-        this.repository.save(bean);
-
-        final DummyBean indexedBean = this.repository.findOne(bean.getId());
-
-        assertNotNull(indexedBean);
-        assertEquals(bean.getId(), indexedBean.getId());
-        assertEquals(bean.getModified(), indexedBean.getModified());
-        assertEquals(bean.getName(), indexedBean.getName());
-    }
-
-    /**
      * Tests that all indexed records can be retrieved.
      */
     @Test
     public void testFindAll()
     {
-        DummyBean bean = new DummyBean(UUID.randomUUID().toString(), new Date(), "Searchable data");
-
+        Brand bean = new Brand(UUID.randomUUID().toString(), "Garmin",
+                "Innovative GPS technology across diverse markets, including aviation, marine, fitness, outdoor recreation, tracking and mobile apps.");
         this.repository.save(bean);
 
-        bean = new DummyBean(UUID.randomUUID().toString(), new Date(), "Searchable data");
-
+        bean = new Brand(UUID.randomUUID().toString(), "Acer",
+                "Manufacturer and distributor of PC notebooks and desktops, smartphones, monitors, TVs and solutions for business, Government, Education and home users.");
         this.repository.save(bean);
 
-        bean = new DummyBean(UUID.randomUUID().toString(), new Date(), "Searchable data");
-
+        bean = new Brand(
+                UUID.randomUUID().toString(),
+                "Nestlé",
+                "Nestlé is the world's leading Nutrition, Health and Wellness company. With headquarters in Switzerland, Nestlé has offices, factories and research and development facilities around the world.");
         this.repository.save(bean);
 
-        Iterable<DummyBean> beans = this.repository.findAll();
+        bean = new Brand(UUID.randomUUID().toString(), "Boeing", "American builder and manufacturer of Commercial Airplanes and Integrated Defence Systems.");
+        this.repository.save(bean);
+
+        Iterable<Brand> beans = this.repository.findAll();
 
         assertNotNull(beans.iterator());
-    }
-
-    /**
-     * Tests that objects can be indexed using the repository interfaces.
-     */
-    @Test
-    public void testSave()
-    {
-        final DummyBean bean = new DummyBean(UUID.randomUUID().toString(), new Date(), "Searchable data");
-
-        final DummyBean indexedBean = this.repository.save(bean);
-
-        assertNotNull(indexedBean);
-        assertEquals(bean.getId(), indexedBean.getId());
-        assertEquals(bean.getModified(), indexedBean.getModified());
-        assertEquals(bean.getName(), indexedBean.getName());
     }
 }

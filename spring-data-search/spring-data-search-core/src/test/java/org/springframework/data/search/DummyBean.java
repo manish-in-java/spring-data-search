@@ -56,15 +56,6 @@ public class DummyBean implements Indexable
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getIndexName()
-    {
-        return null;
-    }
-
     public void setId(String id)
     {
         this.id = id;
