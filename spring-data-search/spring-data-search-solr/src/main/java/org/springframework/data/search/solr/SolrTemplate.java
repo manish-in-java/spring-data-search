@@ -76,11 +76,11 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
      * @param core The name of the Solr core to use.
      * @param embedded If <code>true</code>, an {@link EmbeddedSolrServer}
      *            instance is created.
-     * @param path Comma-separated paths to the Solr server. If
-     *            <code>embedded</code> is <code>true</code>, this should
-     *            contain exactly one path. A {@link RuntimeException} will be
-     *            thrown if <code>embedded</code> is <code>true</code> and this
-     *            parameter has more than one path. If <code>embedded</code> is
+     * @param paths Paths to the Solr server. If <code>embedded</code> is
+     *            <code>true</code>, this should contain exactly one path. A
+     *            {@link RuntimeException} will be thrown if
+     *            <code>embedded</code> is <code>true</code> and this parameter
+     *            has more than one path. If <code>embedded</code> is
      *            <code>false</code>, this can contain one or more paths. A
      *            {@link CommonsHttpSolrServer} instance is created if only one
      *            path is passed, otherwise an {@link LBHttpSolrServer} instance
@@ -95,9 +95,9 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
      * @throws SAXException If the Solr configuration at any of the locations
      *             pointed to by <code>paths</code> contains invalid XML.
      */
-    public SolrTemplate(final String core, final boolean embedded, final String path) throws IOException, MalformedURLException, ParserConfigurationException, SAXException
+    public SolrTemplate(final String core, final boolean embedded, final String[] paths) throws IOException, MalformedURLException, ParserConfigurationException, SAXException
     {
-        this(createSolrServer(core, embedded, path));
+        this(createSolrServer(core, embedded, paths));
     }
 
     /**
@@ -488,7 +488,7 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
      * @param core The name of the Solr core to use.
      * @param embedded If <code>true</code>, an {@link EmbeddedSolrServer}
      *            instance is created.
-     * @param path Paths to the Solr server. If <code>embedded</code> is
+     * @param paths Paths to the Solr server. If <code>embedded</code> is
      *            <code>true</code>, this should contain exactly one path. A
      *            {@link RuntimeException} will be thrown if
      *            <code>embedded</code> is <code>true</code> and this parameter
@@ -507,22 +507,20 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
      * @throws SAXException If the Solr configuration at any of the locations
      *             pointed to by <code>paths</code> contains invalid XML.
      */
-    private static SolrServer createSolrServer(final String core, final boolean embedded, final String path) throws IOException, MalformedURLException,
+    private static SolrServer createSolrServer(final String core, final boolean embedded, final String[] paths) throws IOException, MalformedURLException,
             ParserConfigurationException, SAXException
     {
-        if (path == null)
+        if (paths == null)
         {
             throw new RuntimeException("Argument [paths] is null.");
         }
-        else if (path.trim().equals(""))
-        {
-            throw new RuntimeException("Argument [paths] contains a blank path.");
-        }
-
-        final String[] paths = path.split(",");
-        if (paths[0].trim().equals(""))
+        else if (paths[0] == null)
         {
             throw new RuntimeException("Argument [paths] contains a null path.");
+        }
+        else if (paths[0].trim().equals(""))
+        {
+            throw new RuntimeException("Argument [paths] contains a blank path.");
         }
 
         if (embedded)

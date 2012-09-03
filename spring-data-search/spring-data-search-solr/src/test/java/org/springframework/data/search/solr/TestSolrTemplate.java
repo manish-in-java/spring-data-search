@@ -49,17 +49,23 @@ public class TestSolrTemplate
 {
     private SearchOperations searchOperations;
 
+    /**
+     * Sets up a {@link SolrTemplate} for performing search operations.
+     */
     @Before
     public void beforeEachTest() throws SolrServerException, IOException, ParserConfigurationException, SAXException
     {
-        searchOperations = new SolrTemplate("default", true, "solr/solr.xml");
+        searchOperations = new SolrTemplate("default", true, new String[] { "solr/solr.xml" });
         searchOperations.deleteByQuery("*:*");
     }
 
+    /**
+     * Tests that an entry can be added to a search index.
+     */
     @Test
     public void addDocumentAndCheckResult()
     {
-        IndexEntry document = new SimpleIndexEntry();
+        final IndexEntry document = new SimpleIndexEntry();
         document.put("id", "123");
         document.put("name", "toto");
 
@@ -73,15 +79,17 @@ public class TestSolrTemplate
         assertEquals("toto", response.getMatchingEntries().iterator().next().get("name"));
     }
 
+    /**
+     * Tests that multiple entries can be added to the same search index.
+     */
     @Test
     public void addDocumentsAndCheckResult()
     {
-
-        IndexEntry document1 = new SimpleIndexEntry();
+        final IndexEntry document1 = new SimpleIndexEntry();
         document1.put("id", "123");
         document1.put("name", "toto");
 
-        IndexEntry document2 = new SimpleIndexEntry();
+        final IndexEntry document2 = new SimpleIndexEntry();
         document2.put("id", "124");
         document2.put("name", "tata");
 
@@ -105,9 +113,8 @@ public class TestSolrTemplate
     @Test
     public void addDummyBeanAndCheckResult()
     {
-
-        Date today = new Date();
-        DummyBean bean = new DummyBean("1234", today, "dummy name");
+        final Date today = new Date();
+        final DummyBean bean = new DummyBean("1234", today, "dummy name");
 
         searchOperations.index(bean);
 
@@ -124,10 +131,9 @@ public class TestSolrTemplate
     @Test
     public void addDummyBeansAndCheckResult()
     {
-
-        Date today = new Date();
-        DummyBean bean1 = new DummyBean("1234", today, "dummy name");
-        DummyBean bean2 = new DummyBean("2345", today, "dummy name 2");
+        final Date today = new Date();
+        final DummyBean bean1 = new DummyBean("1234", today, "dummy name");
+        final DummyBean bean2 = new DummyBean("2345", today, "dummy name 2");
 
         searchOperations.index(bean1, bean2);
 

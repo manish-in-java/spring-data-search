@@ -12,19 +12,31 @@
     <bean id="solrBrandTemplate" class="org.springframework.data.search.solr.SolrTemplate">
         <constructor-arg index="0" name="core" value="brand" />
         <constructor-arg index="1" name="embedded" value="true" />
-        <constructor-arg index="2" name="path" value="solr/solr.xml" />
+        <constructor-arg index="2" name="paths">
+            <array>
+                <value>solr/solr.xml</value>
+            </array>
+        </constructor-arg>
     </bean>
 
     <bean id="solrDefaultTemplate" class="org.springframework.data.search.solr.SolrTemplate">
         <constructor-arg index="0" name="core" value="default" />
         <constructor-arg index="1" name="embedded" value="true" />
-        <constructor-arg index="2" name="path" value="solr/solr.xml" />
+        <constructor-arg index="2" name="paths">
+            <array>
+                <value>solr/solr.xml</value>
+            </array>
+        </constructor-arg>
     </bean>
 
     <bean id="solrProductTemplate" class="org.springframework.data.search.solr.SolrTemplate">
         <constructor-arg index="0" name="core" value="product" />
         <constructor-arg index="1" name="embedded" value="true" />
-        <constructor-arg index="2" name="path" value="solr/solr.xml" />
+        <constructor-arg index="2" name="paths">
+            <array>
+                <value>solr/solr.xml</value>
+            </array>
+        </constructor-arg>
     </bean>
 
     <solr:repositories base-package="org.springframework.data.search.solr.repository" solr-template-ref="solrDefaultTemplate" />
