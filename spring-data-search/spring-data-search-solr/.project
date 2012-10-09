@@ -3,6 +3,8 @@
 	<name>spring-data-search-solr</name>
 	<comment></comment>
 	<projects>
+		<project>spring-data-search</project>
+		<project>spring-data-search-core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -44,6 +44,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.search.IndexEntry;
 import org.springframework.data.search.QueryResponse;
 import org.springframework.data.search.SearchTemplate;
+import org.springframework.data.search.util.PathUtil;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.xml.sax.SAXException;
@@ -551,6 +552,6 @@ public class SolrTemplate extends SearchTemplate implements SolrOperations
             return new LBHttpSolrServer(paths);
         }
 
-        return new CommonsHttpSolrServer(paths[0]);
+        return new CommonsHttpSolrServer(PathUtil.concatenate('/', paths[0], core));
     }
 }

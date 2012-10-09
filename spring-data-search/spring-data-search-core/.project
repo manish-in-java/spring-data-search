@@ -3,6 +3,7 @@
 	<name>spring-data-search-core</name>
 	<comment></comment>
 	<projects>
+		<project>spring-data-search</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
