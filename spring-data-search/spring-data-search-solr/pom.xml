@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.springframework.data</groupId>
         <artifactId>spring-data-search</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>spring-data-search-solr</artifactId>
     <packaging>jar</packaging>
 
-    <name>Spring Data Search Solr</name>
+    <name>Spring Data Apache Solr Search</name>
     <description>An abstraction layer for Apache Solr search engine based on Spring Data patterns.</description>
 
     <build>
