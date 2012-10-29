@@ -17,6 +17,8 @@
 package org.springframework.data.search.solr.config;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+import org.springframework.data.repository.config.RepositoryBeanDefinitionParser;
+import org.springframework.data.repository.config.RepositoryConfigurationExtension;
 
 /**
  * Provides support for parsing Spring configuration associated with the
@@ -30,6 +32,9 @@ public class SolrNamespaceHandler extends NamespaceHandlerSupport
     @Override
     public void init()
     {
-        registerBeanDefinitionParser("repositories", new SolrRepositoryConfigParser());
+        final RepositoryConfigurationExtension extension = new SolrRepositoryConfigurationExtension();
+        final RepositoryBeanDefinitionParser repositoryBeanDefinitionParser = new RepositoryBeanDefinitionParser(extension);
+
+        registerBeanDefinitionParser("repositories", repositoryBeanDefinitionParser);
     }
 }
